@@ -1,15 +1,26 @@
 // MyTabs.js
 import React, { useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SearchModal from "../modals/SearchModals";
 
 import UpdateScreen from "../screens/UpdateScreen";
 import CallScreen from "../screens/CallScreen";
 import ChatScreen from "../screens/ChatScreen";
+import ChatWithUser from "../screens/ChatWithUser";
+
 
 const Tab = createMaterialTopTabNavigator();
+
+function SearchButton({ onPress }) {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <AntDesign name="search1" size={24} color="black" style={styles.icon} />
+    </TouchableOpacity>
+  );
+}
 
 function MyTabs() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,6 +33,28 @@ function MyTabs() {
     setModalVisible(false);
   };
 
+  const Stack = createNativeStackNavigator();
+
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MainTabs"
+        options={{ headerShown: false }}
+      >
+        {() => (
+          <MainTabsScreen
+            openModal={openModal}
+            closeModal={closeModal}
+            modalVisible={modalVisible}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Chatting" component={ChatWithUser} />
+    </Stack.Navigator>
+  );
+}
+
+function MainTabsScreen({ openModal, closeModal, modalVisible }) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.headerContainer}>
@@ -30,8 +63,7 @@ function MyTabs() {
           <View style={styles.headerIcons}>
             <Ionicons name="camera-outline" size={24} color="black" style={styles.icon} />
             <View style={styles.iconSeparator} />
-            <AntDesign name="search1" size={24} color="black" style={styles.icon} onPress={openModal} />
-            <SearchModal visible={modalVisible} closeModal={closeModal} />
+            <SearchButton onPress={openModal} />
             <View style={styles.iconSeparator} />
             <Entypo name="dots-three-vertical" size={24} color="black" style={styles.icon} />
           </View>
@@ -68,7 +100,7 @@ function MyTabs() {
           <Tab.Screen name="Calls" component={CallScreen} />
         </Tab.Navigator>
       </View>
-     
+      <SearchModal visible={modalVisible} closeModal={closeModal} />
     </View>
   );
 }

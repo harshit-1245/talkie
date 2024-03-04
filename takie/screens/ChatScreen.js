@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import UserChat from '../components/UserChat'
 
 const ChatScreen = () => {
   return (
-    <View>
-      <Text>ChatScreen</Text>
-    </View>
+   <ScrollView>
+    <Pressable>
+      <UserChat/>
+    </Pressable>
+   </ScrollView>
   )
 }
 
