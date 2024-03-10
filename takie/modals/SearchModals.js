@@ -1,9 +1,27 @@
-// SearchModal.js
 import React from "react";
-import { View, Modal, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Modal, StyleSheet, TextInput, TouchableOpacity, Image, Text, FlatList, Pressable } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
 const SearchModal = ({ visible, closeModal }) => {
+  const navigation=useNavigation()
+  const data = [
+    { id: "1", name: "User 1", image: require("../assets/profile.jpg") },
+    { id: "2", name: "User 1", image: require("../assets/profile.jpg") },
+    
+    // Add more user data as needed
+  ];
+
+  const renderItem = ({ item }) => (
+    <View>
+      <Pressable onPress={()=>navigation.navigate("Chatting")} style={styles.userProfile}>
+        <Image source={item.image} style={styles.profileImage} />
+        <Text style={styles.profileText}>{item.name}</Text>
+      </Pressable>
+      <View style={{ height: 1, backgroundColor: "gray", marginHorizontal: 10, width: "100%" }} />
+    </View>
+  );
+
   return (
     <Modal
       animationType="slide"
@@ -18,7 +36,7 @@ const SearchModal = ({ visible, closeModal }) => {
       >
         <View style={styles.modalView}>
           <View style={styles.header}>
-            {/* Place your header content here */}
+            <Text style={styles.headerText}>Search</Text>
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
@@ -28,6 +46,11 @@ const SearchModal = ({ visible, closeModal }) => {
               placeholder="Search..."
               style={styles.searchInput}
               autoFocus={true}
+            />
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
             />
           </View>
         </View>
@@ -53,8 +76,13 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 10,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   content: {
     flex: 1,
@@ -70,6 +98,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     marginBottom: 20,
+  },
+  userProfile: {
+    marginTop:20,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  profileText: {
+    fontSize: 16,
   },
 });
 

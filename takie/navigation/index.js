@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons';
+import { Ionicons, AntDesign, Entypo} from '@expo/vector-icons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SearchModal from "../modals/SearchModals";
 
@@ -10,6 +10,7 @@ import UpdateScreen from "../screens/UpdateScreen";
 import CallScreen from "../screens/CallScreen";
 import ChatScreen from "../screens/ChatScreen";
 import ChatWithUser from "../screens/ChatWithUser";
+import LoginScreen from "../screens/LoginScreen";
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -36,7 +37,7 @@ function MyTabs() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="MainTabs"
         options={{ headerShown: false }}
@@ -49,6 +50,7 @@ function MyTabs() {
           />
         )}
       </Stack.Screen>
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Chatting" component={ChatWithUser} />
     </Stack.Navigator>
   );
