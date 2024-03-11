@@ -11,6 +11,7 @@ import CallScreen from "../screens/CallScreen";
 import ChatScreen from "../screens/ChatScreen";
 import ChatWithUser from "../screens/ChatWithUser";
 import LoginScreen from "../screens/LoginScreen";
+import MobileScreen from "../screens/MobileScreen";
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -52,6 +53,7 @@ function MyTabs() {
       </Stack.Screen>
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Chatting" component={ChatWithUser} />
+      <Stack.Screen name="Mobile" component={MobileScreen} options={{headerShown:false}}/>
     </Stack.Navigator>
   );
 }

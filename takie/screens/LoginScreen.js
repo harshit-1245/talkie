@@ -1,9 +1,11 @@
-import { Animated, Easing, Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Entypo, Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
+    const navigation=useNavigation()
     const {
         control,
         handleSubmit,
@@ -65,31 +67,37 @@ const LoginScreen = () => {
                     {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
                 </View>
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Password</Text>
-                    <View style={styles.passwordInput}>
-                        <Controller
-                            control={control}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <TextInput
-                                    placeholder="Enter your password"
-                                    placeholderTextColor={'#666666'}
-                                    secureTextEntry={!isPasswordVisible} // Toggle secureTextEntry based on isPasswordVisible state
-                                    style={styles.passwordTextInput}
-                                    onBlur={onBlur}
-                                    onChangeText={(value) => onChange(value)}
-                                    value={value}
-                                />
-                            )}
-                            name="password"
-                            defaultValue=""
-                            rules={{ required: 'Password is required' }}
-                        />
-                        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeIcon}>
-                            {isPasswordVisible ? <Ionicons name="eye-off-sharp" size={24} color="black" /> : <Entypo name="eye" size={24} color="black" />}
-                        </TouchableOpacity>
-                    </View>
-                    {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
-                </View>
+    <Text style={styles.label}>Password</Text>
+    <View style={styles.passwordInput}>
+        <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                    placeholder="Enter your password"
+                    placeholderTextColor={'#666666'}
+                    secureTextEntry={!isPasswordVisible} // Toggle secureTextEntry based on isPasswordVisible state
+                    style={styles.passwordTextInput}
+                    onBlur={onBlur}
+                    onChangeText={(value) => onChange(value)}
+                    value={value}
+                />
+            )}
+            name="password"
+            defaultValue=""
+            rules={{ required: 'Password is required' }}
+        />
+        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeIcon}>
+            {isPasswordVisible ? <Ionicons name="eye-off-sharp" size={24} color="black" /> : <Entypo name="eye" size={24} color="black" />}
+        </TouchableOpacity>
+    </View>
+    {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+    <Pressable onPress={() => navigation.navigate("Mobile")} style={{marginLeft:150}}>
+    <Text style={styles.loginWithPhoneText}>Login with Phone</Text>
+</Pressable>
+</View>
+
+
+                
                 <Animated.View style={[styles.submitButtonContainer, { transform: [{ translateY }] }]}>
                     <TouchableOpacity
                         style={styles.submitButton}
@@ -173,6 +181,12 @@ const styles = StyleSheet.create({
     loadingImage: {
         width: 20, // Adjust the width of the loading image
         height: 20, // Adjust the height of the loading image
+    },
+    loginWithPhoneText: {
+        color: '#ffffff',
+        fontSize: 16,
+        textDecorationLine: 'underline',
+        
     },
 });
 
