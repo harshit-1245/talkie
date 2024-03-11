@@ -10,7 +10,7 @@ const MobileScreen = () => {
     const [selectedArea,setSelectedArea]=useState(null)
 
     const [animatedValue] = useState(new Animated.Value(0));
-    const {}
+   
 
 
     const {
