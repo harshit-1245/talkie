@@ -1,14 +1,23 @@
 import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
+import { useForm, Controller } from "react-hook-form"
 import { useNavigation } from "@react-navigation/native";
+import useSWR from "swr"
 
 const MobileScreen = () => {
     const navigation = useNavigation();
-    const [countryCode, setCountryCode] = useState("+91");
-    const [phoneNumber, setPhoneNumber] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedArea,setSelectedArea]=useState(null)
 
     const [animatedValue] = useState(new Animated.Value(0));
+    const {}
+
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
     const animateButton = () => {
         Animated.timing(animatedValue, {
@@ -19,14 +28,14 @@ const MobileScreen = () => {
         }).start();
     };
 
-    const onSubmit = async () => {
+    const onSubmit = async (data) => {
         setIsLoading(true);
         animateButton();
         // Simulate loading
         setTimeout(() => {
             setIsLoading(false);
         }, 2000);
-        console.log(phoneNumber); // Log the phone number
+        console.log(data.phoneNumber); // Log the phone number
     };
 
     const translateY = animatedValue.interpolate({
@@ -44,21 +53,37 @@ const MobileScreen = () => {
             <View style={{ marginBottom: 12 }}>
                 <Text style={styles.labelText}>Phone Number</Text>
                 <View style={styles.phoneInputContainer}>
-                    <TextInput
-                        placeholder="+91"
-                        placeholderTextColor={'black'}
-                        keyboardType="numeric"
-                        style={[styles.inputField, styles.countryCodeInput]}
-                        value={countryCode}
-                        onChangeText={(text) => setCountryCode(text)}
+                    <Controller
+                        control={control}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                placeholder="+91"
+                                placeholderTextColor={'black'}
+                                keyboardType="numeric"
+                                style={[styles.inputField, styles.countryCodeInput]}
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                            />
+                        )}
+                        name="countryCode"
+                        defaultValue=""
                     />
-                    <TextInput
-                        placeholder="Enter your phone number"
-                        placeholderTextColor={'black'}
-                        keyboardType="numeric"
-                        style={[styles.inputField, styles.phoneNumberInput]}
-                        value={phoneNumber}
-                        onChangeText={(text) => setPhoneNumber(text)}
+                    <Controller
+                        control={control}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                placeholder="Enter your phone number"
+                                placeholderTextColor={'black'}
+                                keyboardType="numeric"
+                                style={[styles.inputField, styles.phoneNumberInput]}
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                            />
+                        )}
+                        name="phoneNumber"
+                        defaultValue=""
                     />
                 </View>
                 <Pressable onPress={() => navigation.navigate("Login")}> 
@@ -67,7 +92,7 @@ const MobileScreen = () => {
             </View>
 
             <Animated.View style={[styles.sendOtpButton, styles.submitButton, { transform: [{ translateY }] }]}>
-                <Pressable onPress={() => onSubmit()}>
+                <Pressable onPress={handleSubmit(onSubmit)}>
                     {isLoading ? (
                         <Image source={require("../assets/loading.gif")} style={styles.loadingImage} />
                     ) : (
