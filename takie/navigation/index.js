@@ -38,7 +38,7 @@ function MyTabs() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator>
       <Stack.Screen
         name="MainTabs"
         options={{ headerShown: false }}
