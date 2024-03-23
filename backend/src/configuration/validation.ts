@@ -1,3 +1,4 @@
+import { profile } from 'console';
 import Joi, { Schema } from 'joi';
 
 const usernamePattern = /^[a-zA-Z0-9_]{3,30}$/;
@@ -13,6 +14,7 @@ const registrationSchema: Schema = Joi.object({
   email: Joi.string().email().required(),
   username: Joi.string().required(),
   password: Joi.string().required(),
+  profile:Joi.string().required()
 });
 
 // Joi schema for user login

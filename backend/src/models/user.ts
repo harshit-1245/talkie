@@ -7,6 +7,9 @@ interface IUser extends Document {
   email: string;
   password: string;
   profile: string;
+  friendRequest: mongoose.Types.ObjectId[];
+  friend: mongoose.Types.ObjectId[];
+  sendFriendRequest: mongoose.Types.ObjectId[];
   generateAuthToken(): Promise<string>;
 }
 
@@ -33,6 +36,24 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     type: String,
     default: '',
   },
+  friendRequest: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
+  friend: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
+  sendFriendRequest: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 userSchema.pre<IUser>('save', async function (next) {
@@ -46,7 +67,7 @@ userSchema.pre<IUser>('save', async function (next) {
 
 userSchema.methods.generateAuthToken = async function () {
   const user = this as IUser;
-  const token = jwt.sign({ _id: user._id.toString() }, "harry");
+  const token = jwt.sign({ _id: user._id.toString() }, 'harry');
   return token;
 };
 

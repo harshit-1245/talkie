@@ -12,7 +12,7 @@ export const createUser = expressAsyncHandler(async (req: Request, res: Response
       return; // Return here to avoid execution of further logic
     }
 
-    const { username, email, password } = req.body;
+    const { username, email, password,profile } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -22,7 +22,7 @@ export const createUser = expressAsyncHandler(async (req: Request, res: Response
     }
 
     // Create a new user without password
-    const newUser = new User({ email, username,password });
+    const newUser = new User({ email, username,password,profile });
 
     // Generate auth token
     const authToken: string = await newUser.generateAuthToken();

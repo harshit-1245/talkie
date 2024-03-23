@@ -14,14 +14,17 @@
     "@react-navigation/native-stack": "^6.9.22",
     "@tanstack/react-query": "^5.26.3",
     "expo": "~50.0.8",
+    "expo-image-picker": "~14.7.1",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-hook-form": "^7.51.0",
     "react-native": "0.73.4",
+    "react-native-emoji-selector": "^0.2.0",
     "react-native-tab-view": "^3.5.2",
     "swr": "^2.2.5",
     "ws": "^8.16.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

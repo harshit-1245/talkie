@@ -5,6 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Ionicons, AntDesign, Entypo} from '@expo/vector-icons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SearchModal from "../modals/SearchModals";
+import { useNavigation } from '@react-navigation/native';
 
 import UpdateScreen from "../screens/UpdateScreen";
 import CallScreen from "../screens/CallScreen";
@@ -12,6 +13,7 @@ import ChatScreen from "../screens/ChatScreen";
 import ChatWithUser from "../screens/ChatWithUser";
 import LoginScreen from "../screens/LoginScreen";
 import MobileScreen from "../screens/MobileScreen";
+import FriendRequest from "../screens/FriendRequest";
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -26,6 +28,7 @@ function SearchButton({ onPress }) {
 
 function MyTabs() {
   const [modalVisible, setModalVisible] = useState(false);
+ 
 
   const openModal = () => {
     setModalVisible(true);
@@ -54,18 +57,20 @@ function MyTabs() {
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Chatting" component={ChatWithUser} />
       <Stack.Screen name="Mobile" component={MobileScreen} options={{headerShown:false}}/>
+      <Stack.Screen name="Friend" component={FriendRequest}/>
     </Stack.Navigator>
   );
 }
 
 function MainTabsScreen({ openModal, closeModal, modalVisible }) {
+  const navigation=useNavigation()
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.headerContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>talkie</Text>
           <View style={styles.headerIcons}>
-            <Ionicons name="camera-outline" size={24} color="black" style={styles.icon} />
+           <Ionicons onPress={()=>navigation.navigate("Friend")} name="person-add-outline" size={24} color="black" />
             <View style={styles.iconSeparator} />
             <SearchButton onPress={openModal} />
             <View style={styles.iconSeparator} />
