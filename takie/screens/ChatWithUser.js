@@ -1,20 +1,47 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Feather, FontAwesome5, Entypo, AntDesign,Zocial } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";
+import {io} from "socket.io-client"
 import useChatStore from '../src/chatCart';
 
 const ChatWithUser = () => {
   const navigation = useNavigation();
   const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage } = useChatStore();
+  const [socket,setSocket]=useState(null);
   const userId = "65feb55c63c642a740a09991";
   const recepientId = "65feb5bb63c642a740a09995";
 
   const handleEmoji = () => {
     setShowEmoji(!showEmoji);
   }
+
+  //initialize socket io connection 
+
+  useEffect(()=>{
+   const newSocket=io("http://192.168.29.163:4200")
+   setSocket(newSocket)
+   return ()=>{
+    newSocket.disconnect()
+   }
+  },[])
+
+  // Handle receiving new messages
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("new message", (newMessage) => {
+      // Handle the received message
+      console.log("New message received:", newMessage);
+    });
+
+    return () => {
+      socket.off("new message");
+    };
+  }, [socket]);
+
 
   //getting Chat
   const getChat=async()=>{
