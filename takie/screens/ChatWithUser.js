@@ -20,103 +20,47 @@ const ChatWithUser = () => {
 
   //initialize socket io connection 
 
-  useEffect(()=>{
-   const newSocket=io("http://192.168.29.163:4200")
-   setSocket(newSocket)
-   return ()=>{
-    newSocket.disconnect()
-   }
-  },[])
+//initialize socket io connection 
+//http://localhost:4200/sendMessage
+useEffect(() => {
+  const newSocket = io("http://192.168.29.163:4200");
+  setSocket(newSocket);
 
-  // Handle receiving new messages
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("new message", (newMessage) => {
-      // Handle the received message
-      console.log("New message received:", newMessage);
-    });
-
-    return () => {
-      socket.off("new message");
-    };
-  }, [socket]);
+  // Clean up the socket connection when the component unmounts
+  return () => {
+    newSocket.disconnect();
+  };
+}, []);
 
 
-  //getting Chat
-  const getChat=async()=>{
-      try {
-        
-      } catch (error) {
-        console.error(error)
-      }
-  }
+useEffect(() => {
+  if (!socket) return;
 
-  const handleSend=async()=>{
-    try {
-      const requestData={
-        senderId:userId,
-        recepientId:recepientId,
-        messageType:messageType
-      }
-      if (messageType === "text") {
-        requestData.messageText = message;
-      } else if (messageType === "image") {
-        requestData[messageType] = selectedImage;
-      }
-      const response = await axios.post(
-        "http://192.168.29.163:4200/sendMessage",
-        requestData
-      );
-  
-      if (response.status === 200) {
-        setMessage("");
-        setSelectedImage("");
-        setMessageType("text"); // Reset messageType after sending
-        getChat();
-      }
-    } catch (error) {
-      console.error("Error details:", error.response.data);
-      console.error("Status code:", error.response.status);
-    }
-  }
-
-  const uploadImage = async (mode) => {
-    try {
-      let result = {};
-      if (mode === "gallery") {
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-        result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
-        });
-      } else {
-        await ImagePicker.requestCameraPermissionsAsync();
-        result = await ImagePicker.launchCameraAsync({
-          cameraType: ImagePicker.CameraType.front,
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
-        });
-      }
-      if (!result.cancelled) {
-        saveImage(result.uri, "image");
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleNewMessage = (newMessage) => {
+    console.log("Received new message:", newMessage);
+    // Handle the received message here
   };
 
-  const saveImage = (image, messageType) => {
-    try {
-      setMessageType(messageType);
-      setMessage(image);
-    } catch (error) {
-      console.error(error);
-    }
+  socket.on("new message", handleNewMessage);
+
+  return () => {
+    socket.off("new message", handleNewMessage);
   };
+}, [socket]);
+
+const handleSend = async () => {
+  try {
+    console.log("Sending message:", message);
+    // Emit a "send message" event to the server
+    socket.emit("send message", { senderId: userId, recepientId: recepientId, messageText: message });
+    // Clear the message input
+    setMessage("");
+  } catch (error) {
+    console.error("Error while sending message:", error);
+  }
+};
+ 
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -166,7 +110,7 @@ const ChatWithUser = () => {
         </View>
 
         {/* Camera icon */}
-        <TouchableOpacity onPress={() => uploadImage("gallery")} style={styles.iconButton}>
+        <TouchableOpacity  style={styles.iconButton}>
           <FontAwesome5 name="camera" size={24} color="black" />
         </TouchableOpacity>
 

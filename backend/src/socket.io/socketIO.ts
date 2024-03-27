@@ -1,23 +1,21 @@
-import express from "express"
-import http from "http"
-import {Server,Socket} from "socket.io"
+import { Server } from "socket.io";
+import http from "http";
 
-// server using Node's HTTP module
 const server = http.createServer();
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Replace "*" with your frontend URL
+    methods: ["GET", "POST"]
+  }
+});
 
-// Socket.IO instance by passing the server instance
-const io = new Server(server);
+io.on("connection", (socket) => {
+  console.log("A user connected");
 
-// Socket.IO logic
-io.on("connection",(socket:Socket)=>{
-    console.log('A user connected');
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
 
-    // Handle disconnection
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-})
-})
-
-
-
-export default server;
+export { io, server };

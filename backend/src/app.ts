@@ -1,23 +1,40 @@
-import express, { Request, Response } from "express";
-import cors from "cors"
-import userRouter from "./routing/userRoute"
-import  connectDB  from "./database/db";
-import cookieParser from "cookie-parser";
-import messageRoute from "./routing/messageRoute"
-
-const app = express();
+// Import required modules
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import connectDB from './database/db';
 require("dotenv").config()
-const port=process.env.PORT || 5000
-
+// Create Express app
+// Start the server
+const PORT = process.env.PORT || 3000;
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 connectDB()
+// Set up middleware, routes, and other configurations as needed
+// For example:
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(cors())
-app.use(express.json())
-app.use(cookieParser())
+// Set up Socket.IO connection
+io.on('connection', (socket) => {
+  console.log('A user connected');
 
-app.use("/",userRouter)
-app.use("/",messageRoute)
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 
-app.listen(port, () => {
-    console.log(`Server live at ${port}`);
+  // Handle custom events as needed
+  // For example:
+  socket.on('chat message', (msg) => {
+    console.log('Message received:', msg);
+    // Broadcast the message to all clients
+    io.emit('chat message', msg);
+  });
+});
+
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
