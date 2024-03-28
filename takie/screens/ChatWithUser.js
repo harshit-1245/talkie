@@ -4,13 +4,13 @@ import { Feather, FontAwesome5, Entypo, AntDesign,Zocial } from '@expo/vector-ic
 import { useNavigation } from "@react-navigation/native";
 import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";
-import {io} from "socket.io-client"
+// import {io} from "socket.io-client"
 import useChatStore from '../src/chatCart';
 
 const ChatWithUser = () => {
   const navigation = useNavigation();
   const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage } = useChatStore();
-  const [socket,setSocket]=useState(null);
+  // const [socket,setSocket]=useState(null);
   const userId = "65feb55c63c642a740a09991";
   const recepientId = "65feb5bb63c642a740a09995";
 
@@ -22,39 +22,12 @@ const ChatWithUser = () => {
 
 //initialize socket io connection 
 //http://localhost:4200/sendMessage
-useEffect(() => {
-  const newSocket = io("http://192.168.29.163:4200");
-  setSocket(newSocket);
 
-  // Clean up the socket connection when the component unmounts
-  return () => {
-    newSocket.disconnect();
-  };
-}, []);
-
-
-useEffect(() => {
-  if (!socket) return;
-
-  const handleNewMessage = (newMessage) => {
-    console.log("Received new message:", newMessage);
-    // Handle the received message here
-  };
-
-  socket.on("new message", handleNewMessage);
-
-  return () => {
-    socket.off("new message", handleNewMessage);
-  };
-}, [socket]);
 
 const handleSend = async () => {
   try {
     console.log("Sending message:", message);
-    // Emit a "send message" event to the server
-    socket.emit("send message", { senderId: userId, recepientId: recepientId, messageText: message });
-    // Clear the message input
-    setMessage("");
+  
   } catch (error) {
     console.error("Error while sending message:", error);
   }
