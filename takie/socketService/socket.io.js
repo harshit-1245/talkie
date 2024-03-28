@@ -8,7 +8,7 @@ class WSService {
      this.socket=io(SOCKET_URL,{
          transports:["websocket"]
      })
-     console.log("initializing socket",this.socket);
+    //  console.log("initializing socket",this.socket);
  
     this.socket.on("connect",(data)=>{
      console.log("=== socket connected ===");
