@@ -10,7 +10,7 @@ class WSService {
      })
      console.log("initializing socket",this.socket);
  
-    this.socket.on("coonect",(data)=>{
+    this.socket.on("connect",(data)=>{
      console.log("=== socket connected ===");
     })
  
