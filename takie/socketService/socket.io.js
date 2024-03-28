@@ -39,3 +39,7 @@ class WSService {
     this.socket.removeListener(listnerName)
    }
 }
+
+const socketServices=new WSService()
+
+export default socketServices;

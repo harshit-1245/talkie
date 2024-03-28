@@ -4,8 +4,10 @@ import { Feather, FontAwesome5, Entypo, AntDesign,Zocial } from '@expo/vector-ic
 import { useNavigation } from "@react-navigation/native";
 import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";
-// import {io} from "socket.io-client"
 import useChatStore from '../src/chatCart';
+import socketServices from '../socketService/socket.io';
+
+
 
 const ChatWithUser = () => {
   const navigation = useNavigation();
@@ -13,6 +15,10 @@ const ChatWithUser = () => {
   // const [socket,setSocket]=useState(null);
   const userId = "65feb55c63c642a740a09991";
   const recepientId = "65feb5bb63c642a740a09995";
+
+  useEffect(()=>{
+    socketServices.initializeSocket()
+  },[])
 
   const handleEmoji = () => {
     setShowEmoji(!showEmoji);
