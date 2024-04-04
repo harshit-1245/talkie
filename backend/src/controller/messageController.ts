@@ -7,7 +7,8 @@ import Message from "../models/message";
 
 export const getMessage=expressAsyncHandler(async(req:Request,res:Response)=>{
   try {
-    
+    const message=await Message.find()
+    res.status(200).json(message)
   } catch (error) {
     res.status(500).json({message:"Error"})
   }
