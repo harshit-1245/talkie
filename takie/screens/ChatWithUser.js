@@ -33,12 +33,16 @@ const ChatWithUser = () => {
 const handleSend = async () => {
   try {
     console.log("Sending message:", message);
-  
+    // Emit a "send message" event to the backend with the message content
+    socketServices.emit("send message", { senderId: userId, recepientId, messageText: message });
+    // Clear the message input
+    setMessage("");
   } catch (error) {
     console.error("Error while sending message:", error);
   }
 };
- 
+
+
 
 
   useLayoutEffect(() => {
