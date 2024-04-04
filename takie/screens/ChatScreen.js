@@ -1,17 +1,20 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import UserChat from '../components/UserChat'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import UserChat from '../components/UserChat';
 
 const ChatScreen = () => {
   return (
-   <ScrollView>
-    <Pressable>
-      <UserChat/>
-    </Pressable>
-   </ScrollView>
-  )
-}
+    <FlatList
+      data={[{ key: '1' }]} // Dummy data, since FlatList requires data prop
+      renderItem={() => (
+        <Pressable onPress={() => {}}>
+          <UserChat />
+        </Pressable>
+      )}
+    />
+  );
+};
 
-export default ChatScreen
+export default ChatScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

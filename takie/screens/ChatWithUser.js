@@ -1,18 +1,21 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect, memo } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Feather, FontAwesome5, Entypo, AntDesign,Zocial } from '@expo/vector-icons';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,useRoute } from "@react-navigation/native";
 import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";
 import useChatStore from '../src/chatCart';
 import socketServices from '../socketService/socket.io';
-import axios from "axios"
+
 
 
 
 const ChatWithUser = () => {
+  const route=useRoute()
   const navigation = useNavigation();
-  const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage,recepientData,setRecepientData } = useChatStore();
+  const recepientUsername=route.params.recepientUsername;
+  const recepientProfile=route.params.recepientProfile
+  const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage } = useChatStore();
   // const [socket,setSocket]=useState(null);
   const userId = "65ff06101f5580ae6bfb1921";
   const recepientId = "65ff05c31f5580ae6bfb191d";
@@ -21,19 +24,10 @@ const ChatWithUser = () => {
     socketServices.initializeSocket()
   },[])
 
-  useEffect(()=>{
-    const getRecepientId=async()=>{
-     try {
-       const response=await axios.get(`http://192.168.29.163:4200/getRecepient/${recepientId}`)
-         
-     
-       setRecepientData(response.data[0])
-     } catch (error) {
-       console.log(error)
-     }
-    }
-    getRecepientId()
- },[])
+
+  
+
+ 
 
 
   const handleEmoji = () => {
@@ -64,9 +58,9 @@ const handleSend = async () => {
           <View style={styles.userContainer}>
             <Image
               style={styles.userImage}
-              source={{uri:recepientData?.profile}}
+              source={{uri:recepientProfile}}
             />
-            <Text style={styles.username}>{recepientData?.username}</Text>
+            <Text style={styles.username}>{recepientUsername}</Text>
           </View>
         </View>
       ),
@@ -133,7 +127,7 @@ const handleSend = async () => {
   );
 };
 
-export default ChatWithUser;
+export default memo(ChatWithUser);
 
 const styles = StyleSheet.create({
   container: {

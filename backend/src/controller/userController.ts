@@ -105,3 +105,18 @@ export const friendRequest=expressAsyncHandler(async(req:Request,res:Response)=>
         res.status(500).json({ message: "Something went wrong while getting user Detail" });
       }
     })
+
+    export const friendList=expressAsyncHandler(async(req:Request,res:Response):Promise<void>=>{
+        try {
+          const {userId}=req.params;
+          User.findById(userId).populate("friend","username email profile").then((user)=>{
+            if(!user){
+              return res.status(400).json({message:"User not found"})
+            }
+            const friends=user.friend.map((friend)=>friend._id);
+            res.status(200).json(friends)
+          })
+        } catch (error) {
+          res.status(500).json({ message: "Something went wrong while getting friendlist" });
+        }
+    })
