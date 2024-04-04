@@ -6,6 +6,8 @@ const useChatStore = create((set) => ({
   showEmoji: false,
   selectedImage: '',
   chatMessage: {},
+  recepientData:[],
+  setRecepientData:(newRecepientData)=>set({recepientData:newRecepientData}),
   setMessage: (newMessage) => set({ message: newMessage }),
   setShowEmoji: (newShowEmoji) => set({ showEmoji: newShowEmoji }),
   setSelectedImage: (newSelectedImage) => set({ selectedImage: newSelectedImage }),

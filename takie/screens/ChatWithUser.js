@@ -6,29 +6,39 @@ import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";
 import useChatStore from '../src/chatCart';
 import socketServices from '../socketService/socket.io';
+import axios from "axios"
 
 
 
 const ChatWithUser = () => {
   const navigation = useNavigation();
-  const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage } = useChatStore();
+  const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage,recepientData,setRecepientData } = useChatStore();
   // const [socket,setSocket]=useState(null);
-  const userId = "65feb55c63c642a740a09991";
-  const recepientId = "65feb5bb63c642a740a09995";
+  const userId = "65ff06101f5580ae6bfb1921";
+  const recepientId = "65ff05c31f5580ae6bfb191d";
 
   useEffect(()=>{
     socketServices.initializeSocket()
   },[])
 
+  useEffect(()=>{
+    const getRecepientId=async()=>{
+     try {
+       const response=await axios.get(`http://192.168.29.163:4200/getRecepient/${recepientId}`)
+         
+     
+       setRecepientData(response.data[0])
+     } catch (error) {
+       console.log(error)
+     }
+    }
+    getRecepientId()
+ },[])
+
+
   const handleEmoji = () => {
     setShowEmoji(!showEmoji);
   }
-
-  //initialize socket io connection 
-
-//initialize socket io connection 
-//http://localhost:4200/sendMessage
-
 
 const handleSend = async () => {
   try {
@@ -54,9 +64,9 @@ const handleSend = async () => {
           <View style={styles.userContainer}>
             <Image
               style={styles.userImage}
-              source={require("../assets/profile.jpg")}
+              source={{uri:recepientData?.profile}}
             />
-            <Text style={styles.username}>harryOsbon</Text>
+            <Text style={styles.username}>{recepientData?.username}</Text>
           </View>
         </View>
       ),
