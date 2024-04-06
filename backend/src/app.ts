@@ -5,6 +5,7 @@ import connectDB from './database/db';
 import userRoute from "./routing/userRoute"
 import messageRoute from "./routing/messageRoute"
 import Message from './models/message';
+import cookieParser from 'cookie-parser';
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -67,9 +68,12 @@ connectDB();
 
 // Set up middleware, routes, and other configurations as needed
 app.use(express.json());
+// Add cookie-parser middleware
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/",userRoute)
 app.use("/",messageRoute)
+
 
 // Start the server
 server.listen(PORT, () => {

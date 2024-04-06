@@ -1,64 +1,48 @@
-import React, { useState, useLayoutEffect, useEffect, memo } from 'react';
-import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Feather, FontAwesome5, Entypo, AntDesign,Zocial } from '@expo/vector-icons';
-import { useNavigation,useRoute } from "@react-navigation/native";
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground, Image } from 'react-native';
+import {useNavigation,useRoute} from "@react-navigation/native"
+import { Feather,FontAwesome5,Zocial,Entypo } from '@expo/vector-icons';
 import EmojiSelector from "react-native-emoji-selector";
-import * as ImagePicker from "expo-image-picker";
-import useChatStore from '../src/chatCart';
 import socketServices from '../socketService/socket.io';
+import useChatStore from '../src/chatCart';
 import axios from "axios"
 
-
-
-
 const ChatWithUser = () => {
+  const navigation=useNavigation()
   const route=useRoute()
-  const navigation = useNavigation();
-  const recepientUsername=route.params.recepientUsername;
   const recepientProfile=route.params.recepientProfile
+  const recepientUsername=route.params.recepientUsername
   const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage } = useChatStore();
-  // const [socket,setSocket]=useState(null);
-  const userId = "65ff06101f5580ae6bfb1921";
-  const recepientId = "65ff05c31f5580ae6bfb191d";
-
-  useEffect(()=>{
-    socketServices.initializeSocket()
+  const recepientId = "65ff06101f5580ae6bfb1921";
+  const userId = "65ff05c31f5580ae6bfb191d";
+  useEffect(() => {
+    socketServices.initializeSocket();
     getChat()
-  },[])
-
-//getting message
-
-  const getChat=async()=>{
-    try {
-      const response=await axios.get(`http://192.168.29.163:4200/message/${userId}/${recepientId}`)
-      setChatMessage(response.data)
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
- 
-
+  }, []);
 
   const handleEmoji = () => {
     setShowEmoji(!showEmoji);
   }
 
-const handleSend = async () => {
-  try {
-    console.log("Sending message:", message);
-    // Emit a "send message" event to the backend with the message content
-    socketServices.emit("send message", { senderId: userId, recepientId, messageText: message });
-    // Clear the message input
-    setMessage("");
-  } catch (error) {
-    console.error("Error while sending message:", error);
+  const handleSend = async () => {
+    try {
+      console.log("Sending message:", message);
+      socketServices.emit("send message", { senderId: userId, recepientId, messageText: message });
+      setMessage("");
+    } catch (error) {
+      console.error("Error while sending message:", error);
+    }
+  };
+
+  const getChat = async () => {
+    try {
+      const response = await axios.get(`http://192.168.29.163:4200/message/${userId}/${recepientId}`);
+      // Assuming the response data is an array of messages
+      setChatMessage(response.data.map((message, index) => ({ ...message, _id: index.toString() })));
+    } catch (error) {
+      console.log(error);
+    }
   }
-};
-
-
-
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -86,23 +70,28 @@ const handleSend = async () => {
 
   const renderMessageItem = ({ item }) => (
     <View style={[styles.messageContainer, item.senderId === userId ? styles.currentUserMessage : styles.recepientMessage]}>
-      <Text>{item.messageText}</Text>
+      <Text style={item.senderId === userId ? styles.currentUserText : styles.recepientText}>{item.messageText}</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require("../assets/takieChat.jpg")}
+      style={styles.container}
+    >
       <FlatList
         data={chatMessage}
         renderItem={renderMessageItem}
         keyExtractor={(item, index) => index.toString()}
-        inverted // Inverts the list to show the latest messages at the bottom
+        contentContainerStyle={styles.chatContainer}
+        
       />
+
       <View style={styles.bottomBar}>
         {showEmoji ? (
-          <AntDesign onPress={() => setShowEmoji(false)} name="close" size={24} color="black" />
+          <Feather onPress={() => setShowEmoji(false)} name="close" size={24} color="black" />
         ) : (
-          <Entypo onPress={handleEmoji} style={{ marginRight: 10 }} name="emoji-happy" size={24} color="black" />
+          <Feather onPress={handleEmoji} style={{ marginRight: 10 }} name="smile" size={24} color="black" />
         )}
 
         <View style={styles.searchBarContainer}>
@@ -113,14 +102,6 @@ const handleSend = async () => {
             value={message}
           />
         </View>
-
-        <TouchableOpacity style={styles.iconButton}>
-          <FontAwesome5 name="camera" size={24} color="black" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconButton}>
-          <Feather name="mic" size={24} color="black" />
-        </TouchableOpacity>
 
         <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
           <Feather name="send" size={24} color="white" />
@@ -137,17 +118,22 @@ const handleSend = async () => {
           />
         </View>
       )}
-    </View>
+    </ImageBackground>
   );
 };
 
 export default ChatWithUser;
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
+    resizeMode: 'cover',
+    justifyContent: 'flex-end',
+  },
+  chatContainer: {
+    paddingTop: 10, // Add padding to the top to give space for the input bar
+    paddingHorizontal: 10,
+    paddingBottom: 60, // Adjusted paddingBottom to accommodate bottomBar
   },
   headerLeft: {
     flexDirection: 'row',
@@ -157,27 +143,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 10,
-  },
-  chatContainer: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  messageContainer: {
-    maxWidth: '80%',
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 10,
-    alignSelf: 'flex-end', // Aligns the message container to the right by default
-    backgroundColor: '#DCF8C6'
-  },
-  currentUserMessage: {
-    alignSelf: 'flex-start', // Aligns the current user's messages to the right
-    backgroundColor: '#DCF8C6', // Light green color for current user's messages
-  },
-  recepientMessage: {
-    alignSelf: 'flex-start', // Aligns the recipient's messages to the left
-    backgroundColor: '#E5E5EA', // Light gray color for recipient's messages
   },
   userImage: {
     width: 30,
@@ -190,11 +155,27 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontWeight: 'bold',
   },
+  messageContainer: {
+    maxWidth: '80%',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+  },
+  currentUserMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#DCF8C6', // Green background for current user's messages
+  },
+  recepientMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFFFFF', // White background for recipient's messages
+  },
+  currentUserText: {
+    color: '#000000', // Black text color for current user's messages
+  },
+  recepientText: {
+    color: '#000000', // Black text color for recipient's messages
+  },
   bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -223,9 +204,6 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconButton: {
-    marginHorizontal: 5,
   },
   emojiSelector: {
     position: 'absolute',

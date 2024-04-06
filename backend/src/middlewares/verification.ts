@@ -19,6 +19,8 @@ const verifyJwt = expressAsyncHandler(async(req: Request, res: Response, next: N
 
         // Verify token
         const decodedToken = Jwt.verify(token, "harry") as DecodedToken; // Adjust the type assertion
+       
+        
         
         // Attach decoded token to the request for further usage
         (req as any)._id = decodedToken._id;
@@ -27,6 +29,7 @@ const verifyJwt = expressAsyncHandler(async(req: Request, res: Response, next: N
         next(); // Call next middleware
     } catch (error) {
         console.error("Error verifying JWT:", error);
+        
         res.status(500).json({ message: "Something went wrong while verifying" });
     }
 });
