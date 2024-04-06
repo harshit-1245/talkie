@@ -5,7 +5,7 @@ import { getChat, getMessage, sendMessage } from "../controller/messageControlle
 const router=express.Router()
 router.route("/messages").get(getMessage)
 router.route("/sendMessage").post(sendMessage)
-router.route("/:senderId/:recepientId").get(getChat);
+router.route("/message/:senderId/:recepientId").get(getChat);
 
 
 export default router;

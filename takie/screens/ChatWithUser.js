@@ -1,11 +1,12 @@
 import React, { useState, useLayoutEffect, useEffect, memo } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Feather, FontAwesome5, Entypo, AntDesign,Zocial } from '@expo/vector-icons';
 import { useNavigation,useRoute } from "@react-navigation/native";
 import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";
 import useChatStore from '../src/chatCart';
 import socketServices from '../socketService/socket.io';
+import axios from "axios"
 
 
 
@@ -22,10 +23,19 @@ const ChatWithUser = () => {
 
   useEffect(()=>{
     socketServices.initializeSocket()
+    getChat()
   },[])
 
+//getting message
 
-  
+  const getChat=async()=>{
+    try {
+      const response=await axios.get(`http://192.168.29.163:4200/message/${userId}/${recepientId}`)
+      setChatMessage(response.data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
  
 
@@ -74,12 +84,20 @@ const handleSend = async () => {
     });
   }, []);
 
+  const renderMessageItem = ({ item }) => (
+    <View style={[styles.messageContainer, item.senderId === userId ? styles.currentUserMessage : styles.recepientMessage]}>
+      <Text>{item.messageText}</Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      {/* Chat content */}
-      <Text>ChatWithUser</Text>
-
-      {/* Search bar */}
+      <FlatList
+        data={chatMessage}
+        renderItem={renderMessageItem}
+        keyExtractor={(item, index) => index.toString()}
+        inverted // Inverts the list to show the latest messages at the bottom
+      />
       <View style={styles.bottomBar}>
         {showEmoji ? (
           <AntDesign onPress={() => setShowEmoji(false)} name="close" size={24} color="black" />
@@ -96,23 +114,19 @@ const handleSend = async () => {
           />
         </View>
 
-        {/* Camera icon */}
-        <TouchableOpacity  style={styles.iconButton}>
+        <TouchableOpacity style={styles.iconButton}>
           <FontAwesome5 name="camera" size={24} color="black" />
         </TouchableOpacity>
 
-        {/* Mic icon */}
         <TouchableOpacity style={styles.iconButton}>
           <Feather name="mic" size={24} color="black" />
         </TouchableOpacity>
 
-        {/* Send button */}
         <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
           <Feather name="send" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* Emoji selector */}
       {showEmoji && (
         <View style={styles.emojiSelector}>
           <EmojiSelector
@@ -127,13 +141,13 @@ const handleSend = async () => {
   );
 };
 
-export default memo(ChatWithUser);
+export default ChatWithUser;
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    
   },
   headerLeft: {
     flexDirection: 'row',
@@ -143,6 +157,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 10,
+  },
+  chatContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  messageContainer: {
+    maxWidth: '80%',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+    alignSelf: 'flex-end', // Aligns the message container to the right by default
+    backgroundColor: '#DCF8C6'
+  },
+  currentUserMessage: {
+    alignSelf: 'flex-start', // Aligns the current user's messages to the right
+    backgroundColor: '#DCF8C6', // Light green color for current user's messages
+  },
+  recepientMessage: {
+    alignSelf: 'flex-start', // Aligns the recipient's messages to the left
+    backgroundColor: '#E5E5EA', // Light gray color for recipient's messages
   },
   userImage: {
     width: 30,
