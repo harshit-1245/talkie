@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground, Image } from 'react-native';
-import {useNavigation,useRoute} from "@react-navigation/native"
-import { Feather,FontAwesome5,Zocial,Entypo } from '@expo/vector-icons';
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Feather, FontAwesome5, Zocial, Entypo } from '@expo/vector-icons';
 import EmojiSelector from "react-native-emoji-selector";
 import socketServices from '../socketService/socket.io';
-import useChatStore from '../src/chatCart';
-import axios from "axios"
+import axios from "axios";
 
 const ChatWithUser = () => {
-  const navigation=useNavigation()
-  const route=useRoute()
-  const recepientProfile=route.params.recepientProfile
-  const recepientUsername=route.params.recepientUsername
-  const { message, setMessage, showEmoji, setShowEmoji, selectedImage, setSelectedImage, chatMessage, setChatMessage } = useChatStore();
+  const navigation = useNavigation();
+  const route = useRoute();
+  const recepientProfile = route.params.recepientProfile;
+  const recepientUsername = route.params.recepientUsername;
+  const [message, setMessage] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [chatMessage, setChatMessage] = useState([]);
   const recepientId = "65ff06101f5580ae6bfb1921";
   const userId = "65ff05c31f5580ae6bfb191d";
+
   useEffect(() => {
     socketServices.initializeSocket();
-    getChat()
+    getChat();
   }, []);
 
   const handleEmoji = () => {
@@ -37,12 +39,12 @@ const ChatWithUser = () => {
   const getChat = async () => {
     try {
       const response = await axios.get(`http://192.168.29.163:4200/message/${userId}/${recepientId}`);
-      // Assuming the response data is an array of messages
       setChatMessage(response.data.map((message, index) => ({ ...message, _id: index.toString() })));
     } catch (error) {
       console.log(error);
     }
   }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -50,10 +52,7 @@ const ChatWithUser = () => {
         <View style={styles.headerLeft}>
           <Feather onPress={() => navigation.goBack()} name="arrow-left" size={24} color="black" />
           <View style={styles.userContainer}>
-            <Image
-              style={styles.userImage}
-              source={{uri:recepientProfile}}
-            />
+            <Image style={styles.userImage} source={{ uri: recepientProfile }} />
             <Text style={styles.username}>{recepientUsername}</Text>
           </View>
         </View>
@@ -75,16 +74,12 @@ const ChatWithUser = () => {
   );
 
   return (
-    <ImageBackground
-      source={require("../assets/takieChat.jpg")}
-      style={styles.container}
-    >
+    <ImageBackground source={require("../assets/takieChat.jpg")} style={styles.container}>
       <FlatList
         data={chatMessage}
         renderItem={renderMessageItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.chatContainer}
-        
       />
 
       <View style={styles.bottomBar}>
@@ -123,6 +118,7 @@ const ChatWithUser = () => {
 };
 
 export default ChatWithUser;
+
 
 const styles = StyleSheet.create({
   container: {

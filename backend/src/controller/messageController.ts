@@ -35,20 +35,27 @@ export const sendMessage = expressAsyncHandler(async (req: Request, res: Respons
 });
 
 
-export const getChat=expressAsyncHandler(async(req:Request,res:Response)=>{
-    
+export const getChat = expressAsyncHandler(async (req, res) => {
     try {
-        const {senderId,recepientId}=req.params;
-        const messages=await Message.find({
-            $or:[
-                {senderId:senderId,recepientId:recepientId},
-                {senderId:recepientId,recepientId:senderId},
-            ],
-        }).populate("senderId","_id username")
+        const { senderId, recipientId } = req.params;
 
-        res.status(200).json(messages)
+        // Find messages between sender and recipient
+        const messages = await Message.find({
+            $or: [
+                { senderId, recipientId },
+                { senderId: recipientId, recipientId: senderId }
+            ]
+        }).sort({ createdAt: 1 }); // Sort messages by createdAt timestamp
+
+        // Extract only the senderId as a string
+        const formattedMessages = messages.map(message => ({
+            ...message.toObject(),
+            senderId: message.senderId.toString() // Extract senderId as a string
+        }));
+
+        res.status(200).json(formattedMessages);
     } catch (error) {
-        console.log(error)
-        res.status(500).json({message:"Error while getting chat"})
+        console.error("Error getting chat:", error);
+        res.status(500).json({ message: "Error getting chat" });
     }
-})
+});
