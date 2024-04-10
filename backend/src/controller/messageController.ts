@@ -35,7 +35,7 @@ export const sendMessage = expressAsyncHandler(async (req: Request, res: Respons
 });
 
 
-export const getChat = expressAsyncHandler(async (req, res) => {
+export const getChat = expressAsyncHandler(async (req:Request, res) => {
     try {
         const { senderId, recipientId } = req.params;
 

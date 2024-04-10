@@ -28,11 +28,19 @@ const ChatWithUser = () => {
 
   const handleSend = async () => {
     try {
-      console.log("Sending message:", message);
-      socketServices.emit("send message", { senderId: userId, recepientId, messageText: message });
+     const handleData={
+      senderId:userId,
+      recepientId:recepientId,
+      messageText:message
+     }
+     const response=await axios.post("http://192.168.29.163:4200/sendMessage",handleData)
+     if(response.status === 200){
       setMessage("");
+      getChat()
+     }
+      
     } catch (error) {
-      console.error("Error while sending message:", error);
+      console.error("Error while sending message:", error.response);
     }
   };
 
