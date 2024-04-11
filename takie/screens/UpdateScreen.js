@@ -1,17 +1,13 @@
 import { FlatList, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
-import { Entypo,FontAwesome6 } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Entypo,FontAwesome6,AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from '@react-navigation/native';
 import StatusModal from '../modals/statusModal';
+import axios from "axios"
 
 
-const data = [
-  { id: '1', username: 'user1', statusImage: require("../assets/profile.jpg") },
-  // { id: '2', username: 'user2', statusImage: require("../assets/profile.jpg") },
-  // { id: '3', username: 'user3', statusImage: require("../assets/profile.jpg") },
-  
-];
+
 
 const handleSetStatus=async()=>{
   
@@ -36,6 +32,44 @@ const handleSetStatus=async()=>{
   const UpdateScreen = () => {
     const navigation=useNavigation()
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const [users,setUsers]=useState([])
+    const [profile,setProfile]=useState({})
+    
+    const recepientIds = ["65ff05c31f5580ae6bfb191d"]; 
+
+    useEffect(() => {
+      
+      getUsers();
+      getProfile()
+    }, []);
+
+    const getUsers = async () => {
+      try {
+        const promises = recepientIds.map(async (recepientId) => {
+          const response = await axios.get(`http://192.168.29.163:4200/getRecepient/${recepientIds}`);
+          return response.data; // Return the whole array instead of just the first element
+        });
+        const usersData = await Promise.all(promises);
+        setUsers(usersData.flat()); // Flatten the array of arrays into a single array of users
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getProfile = async () => {
+      try {
+        const response = await axios.get("http://192.168.29.163:4200");
+        const profileData = response.data; 
+        setProfile(profileData.user[0].profile);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+    
+  console.log(profile);
+
+
 
     const handlePencil = () => {
       setIsModalVisible(true)
@@ -44,7 +78,7 @@ const handleSetStatus=async()=>{
     const renderItem = ({ item }) => (
       <View style={styles.mainStatus}>
         <View style={styles.loadingBar}>
-          <Image source={item.statusImage} style={styles.status} />
+          <Image source={{ uri: item.profile }} style={styles.profileImage} />
         </View>
         <View>
           <Text style={styles.user}>{item.username}</Text>
@@ -55,35 +89,42 @@ const handleSetStatus=async()=>{
   
     return (
       <View style={styles.container}>
-        <Pressable style={styles.statusContainer} onPress={handleSetStatus}>
-          <View style={styles.profileImageContainer}>
-            <Image source={require("../assets/profile.jpg")} style={styles.profileImage} />
-            <TouchableOpacity style={styles.addStatusButton}>
-              <Entypo name="plus" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.addStatusText}>Tap to add status update</Text>
-          </View>
-        </Pressable>
-        <View style={styles.line} />
-        <View style={styles.footerContainer}>
-          <Text style={styles.viewed}>View Status</Text>
-          <Pressable style={styles.three}>
-            <Entypo name="dots-three-vertical" size={20} color="black" />
-          </Pressable>
+      <Pressable style={styles.statusContainer} onPress={handleSetStatus}>
+        <View style={styles.profileImageContainer}>
+          {typeof profile === 'string' && profile.length > 0 && (
+            <Image source={{ uri: profile }} style={styles.profileImage} />
+          )}
+          <TouchableOpacity style={styles.addStatusButton}>
+            <Entypo name="plus" size={24} color="black" />
+          </TouchableOpacity>
         </View>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-        {/* Pencil Box */}
-        <Pressable style={styles.pencilBox} onPress={handlePencil}>
-          <FontAwesome6 name="pencil" size={24} color="black" style={styles.pencilIcon} />
+        <View style={styles.textContainer}>
+          <Text style={styles.addStatusText}>Tap to add status update</Text>
+        </View>
+      </Pressable>
+      <View style={styles.line} />
+      <View style={styles.footerContainer}>
+        <Text style={styles.viewed}>View Status</Text>
+        <Pressable style={styles.three}>
+          <Entypo name="dots-three-vertical" size={20} color="black" />
         </Pressable>
-        <StatusModal visible={isModalVisible} onClose={() => setIsModalVisible(false)}/>
       </View>
+      <FlatList
+        data={users}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+      />
+      {/* Pencil Box */}
+      <Pressable style={styles.pencilBox} onPress={handlePencil}>
+        <FontAwesome6 name="pencil" size={24} color="black" style={styles.pencilIcon} />
+      </Pressable>
+      <Pressable style={styles.cameraBox} onPress={handleSetStatus}>
+        <AntDesign name="camerao" size={24} color="black" style={styles.pencilIcon} />
+      </Pressable>
+      <StatusModal visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
+    </View>
+    
+
     );
   }
   
@@ -180,7 +221,15 @@ const styles = StyleSheet.create({
   pencilBox: {
     position: 'absolute',
     right: 20,
-    bottom: 60,
+    bottom: 100,
+    backgroundColor: 'lightgray',
+    borderRadius: 20,
+    padding: 10,
+  },
+  cameraBox: {
+    position: 'absolute',
+    right: 20,
+    bottom: 40,
     backgroundColor: 'lightgray',
     borderRadius: 20,
     padding: 10,

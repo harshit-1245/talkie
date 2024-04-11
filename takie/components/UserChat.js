@@ -7,7 +7,7 @@ const UserChat = () => {
   const [users, setUsers] = useState([]);
   const navigation = useNavigation();
   
-  const recepientIds = ["65ff05c31f5580ae6bfb191d"]; // Add more recipient IDs as needed
+  const recepientIds = ["65ff05c31f5580ae6bfb191d"]; 
 
   useEffect(() => {
     const getUsers = async () => {
