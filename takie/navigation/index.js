@@ -1,4 +1,4 @@
-// MyTabs.js
+
 import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -14,6 +14,7 @@ import ChatWithUser from "../screens/ChatWithUser";
 import LoginScreen from "../screens/LoginScreen";
 import MobileScreen from "../screens/MobileScreen";
 import FriendRequest from "../screens/FriendRequest";
+
 
 
 const Tab = createMaterialTopTabNavigator();
