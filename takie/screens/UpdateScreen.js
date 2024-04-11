@@ -1,8 +1,9 @@
 import { FlatList, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Entypo,FontAwesome6 } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from '@react-navigation/native';
+import StatusModal from '../modals/statusModal';
 
 
 const data = [
@@ -30,9 +31,16 @@ const handleSetStatus=async()=>{
     }
   };
 
+  
 
   const UpdateScreen = () => {
     const navigation=useNavigation()
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    const handlePencil = () => {
+      setIsModalVisible(true)
+    }
+
     const renderItem = ({ item }) => (
       <View style={styles.mainStatus}>
         <View style={styles.loadingBar}>
@@ -71,9 +79,10 @@ const handleSetStatus=async()=>{
           keyExtractor={item => item.id}
         />
         {/* Pencil Box */}
-        <Pressable style={styles.pencilBox} onPress={()=>navigation.navigate("Status")}>
+        <Pressable style={styles.pencilBox} onPress={handlePencil}>
           <FontAwesome6 name="pencil" size={24} color="black" style={styles.pencilIcon} />
         </Pressable>
+        <StatusModal visible={isModalVisible} onClose={() => setIsModalVisible(false)}/>
       </View>
     );
   }

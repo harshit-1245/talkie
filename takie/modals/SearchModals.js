@@ -9,7 +9,7 @@ const SearchModal = ({ visible, closeModal }) => {
     { id: "1", name: "User 1", image: require("../assets/profile.jpg") },
     { id: "2", name: "User 1", image: require("../assets/profile.jpg") },
     
-    // Add more user data as needed
+   
   ];
 
   const renderItem = ({ item }) => (
