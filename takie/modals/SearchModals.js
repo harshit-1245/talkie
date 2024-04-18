@@ -1,22 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Modal, StyleSheet, TextInput, TouchableOpacity, Image, Text, FlatList, Pressable } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios"
 
 const SearchModal = ({ visible, closeModal }) => {
-  const navigation=useNavigation()
-  const data = [
-    { id: "1", name: "User 1", image: require("../assets/profile.jpg") },
-    { id: "2", name: "User 1", image: require("../assets/profile.jpg") },
-    
-   
-  ];
+  const navigation = useNavigation();
+  const [data, setData] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const response = await axios.get("http://192.168.14.201:4200");
+        setData(response.data); 
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUsers();
+  }, []);
+
+  const filteredData = data && data.user && Array.isArray(data.user) 
+  ? data.user.filter(item =>
+      item.username.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  : [];
+
 
   const renderItem = ({ item }) => (
     <View>
-      <Pressable onPress={()=>navigation.navigate("Chatting")} style={styles.userProfile}>
-        <Image source={item.image} style={styles.profileImage} />
-        <Text style={styles.profileText}>{item.name}</Text>
+      <Pressable onPress={()=>navigation.navigate("Chatting",{
+         recepientUsername:item.username,
+         recepientProfile:item.profile
+      })} style={styles.userProfile}>
+        <Image source={{ uri: item.profile }} style={styles.profileImage} />
+        <Text style={styles.profileText}>{item.username}</Text>
       </Pressable>
       <View style={{ height: 1, backgroundColor: "gray", marginHorizontal: 10, width: "100%" }} />
     </View>
@@ -46,11 +65,13 @@ const SearchModal = ({ visible, closeModal }) => {
               placeholder="Search..."
               style={styles.searchInput}
               autoFocus={true}
+              value={searchQuery}
+              onChangeText={text => setSearchQuery(text)}
             />
             <FlatList
-              data={data}
+              data={filteredData}
               renderItem={renderItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item._id}
             />
           </View>
         </View>
@@ -58,6 +79,7 @@ const SearchModal = ({ visible, closeModal }) => {
     </Modal>
   );
 };
+
 
 const styles = StyleSheet.create({
   centeredView: {

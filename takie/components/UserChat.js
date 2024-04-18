@@ -13,7 +13,7 @@ const UserChat = () => {
     const getUsers = async () => {
       try {
         const promises = recepientIds.map(async (recepientId) => {
-          const response = await axios.get(`http://192.168.29.163:4200/getRecepient/${recepientId}`);
+          const response = await axios.get(`http://192.168.14.201:4200/getRecepient/${recepientId}`);
           return response.data; // Return the whole array instead of just the first element
         });
         const usersData = await Promise.all(promises);

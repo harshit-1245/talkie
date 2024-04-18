@@ -46,7 +46,7 @@ const handleSetStatus=async()=>{
     const getUsers = async () => {
       try {
         const promises = recepientIds.map(async (recepientId) => {
-          const response = await axios.get(`http://192.168.29.163:4200/getRecepient/${recepientIds}`);
+          const response = await axios.get(`http://192.168.14.201:4200/getRecepient/${recepientIds}`);
           return response.data; // Return the whole array instead of just the first element
         });
         const usersData = await Promise.all(promises);
@@ -58,7 +58,7 @@ const handleSetStatus=async()=>{
 
     const getProfile = async () => {
       try {
-        const response = await axios.get("http://192.168.29.163:4200");
+        const response = await axios.get("http://192.168.14.201:4200");
         const profileData = response.data; 
         setProfile(profileData.user[0].profile);
       } catch (error) {
@@ -67,7 +67,7 @@ const handleSetStatus=async()=>{
     };
     
     
-  console.log(profile);
+  
 
 
 
