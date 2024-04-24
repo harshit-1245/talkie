@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const statusSchema = new mongoose.Schema({
     text: {
         type: String,
-        minlength: 2000
+        // minlength: 2000,
+        required:true
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,

@@ -6,6 +6,7 @@ import userRoute from "./routing/userRoute"
 import messageRoute from "./routing/messageRoute"
 import Message from './models/message';
 import cookieParser from 'cookie-parser';
+import statusRoute from "./routing/statusRoute"
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -46,6 +47,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/",userRoute)
 app.use("/",messageRoute)
+app.use("/",statusRoute)
 
 
 // Start the server
