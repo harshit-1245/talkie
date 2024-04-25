@@ -14,6 +14,7 @@ import ChatWithUser from "../screens/ChatWithUser";
 import LoginScreen from "../screens/LoginScreen";
 import MobileScreen from "../screens/MobileScreen";
 import FriendRequest from "../screens/FriendRequest";
+import StatusScreen from "../screens/StatusScreen";
 
 
 
@@ -59,6 +60,7 @@ function MyTabs() {
       <Stack.Screen name="Chatting" component={ChatWithUser} />
       <Stack.Screen name="Mobile" component={MobileScreen} options={{headerShown:false}}/>
       <Stack.Screen name="Friend" component={FriendRequest}/>
+      <Stack.Screen name="StatusDekho" component={StatusScreen} options={{headerShown:false}}/>
     </Stack.Navigator>
   );
 }

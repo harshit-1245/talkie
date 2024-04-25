@@ -67,7 +67,10 @@ const handleSetStatus=async()=>{
       }
     };
     
-  
+  const handleNavigation=()=>{
+   
+    navigation.navigate("StatusDekho")
+  }
    
     
 
@@ -78,7 +81,7 @@ const handleSetStatus=async()=>{
     }
 
     const renderItem = ({ item }) => (
-      <View style={styles.mainStatus}>
+      <Pressable onPress={handleNavigation} style={styles.mainStatus}>
         <View style={styles.loadingBar}>
           <Image source={{ uri: item.profile }} style={styles.profileImage} />
         </View>
@@ -86,7 +89,7 @@ const handleSetStatus=async()=>{
           <Text style={styles.user}>{item.username}</Text>
           <Text style={styles.timestamps}>Timestamps</Text>
         </View>
-      </View>
+      </Pressable>
     );
   
     return (
