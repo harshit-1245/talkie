@@ -5,7 +5,7 @@ import * as ImagePicker from "expo-image-picker"
 import { useNavigation } from '@react-navigation/native';
 import StatusModal from '../modals/statusModal';
 import axios from "axios"
-import { sendStatus } from '../apis/apiRequests';
+
 
 
 
@@ -32,6 +32,7 @@ const handleSetStatus=async()=>{
 
   const UpdateScreen = () => {
     const navigation=useNavigation()
+    
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [users,setUsers]=useState([])
     const [profile,setProfile]=useState({})
