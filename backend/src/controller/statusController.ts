@@ -24,3 +24,15 @@ export const setStatus=expressAsyncHandler(async(req:Request,res:Response)=>{
         res.status(404).json({message:"Something went wrong while set status"})
     }
 })
+
+export const getStatus=expressAsyncHandler(async(req:Request,res:Response)=>{
+
+    try {
+        const {userId}=req.params
+        const status=await Status.find({author:userId}).populate('author')
+        res.status(200).json(status);
+    } catch (error) {
+        console.error('Error getting status:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})

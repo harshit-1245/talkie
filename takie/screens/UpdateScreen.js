@@ -67,7 +67,7 @@ const handleSetStatus=async()=>{
       }
     };
     
-    //post method foe set status 
+  
    
     
 

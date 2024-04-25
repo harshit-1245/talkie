@@ -32,6 +32,10 @@ const StatusModal = ({ visible, onClose }) => {
         }
     };
 
+    const getStatus=async()=>{
+        const response=await axios.get
+    }
+
     return (
         <Modal
             visible={visible}
