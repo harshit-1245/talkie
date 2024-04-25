@@ -1,14 +1,35 @@
 import React, { useState } from 'react';
-import { Modal, StyleSheet, TextInput, TouchableOpacity, View, Text } from 'react-native';
+import { Modal, StyleSheet, TextInput, TouchableOpacity, View, Text, ToastAndroid } from 'react-native';
+import axios from 'axios';
 
 const StatusModal = ({ visible, onClose }) => {
     const [statusText, setStatusText] = useState('');
+    const userId = "65ff05c31f5580ae6bfb191d";
 
-    const handleSave = () => {
-        
-        console.log('Status Text:', statusText);
-        onClose(); 
-        setStatusText("")
+    const handleSave = async () => {
+        try {
+            // Post method for sending status to the backend
+            const response = await axios.post(`http://192.168.6.201:4200/status`, {
+                userId: userId,
+                text: statusText // Use statusText instead of text
+            });
+            if (response.status === 200) {
+                ToastAndroid.showWithGravity(
+                    'Status saved successfully',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER
+                );
+                onClose();
+                setStatusText("");
+            }
+        } catch (error) {
+            console.error('Error saving status:', error);
+            ToastAndroid.showWithGravity(
+                'Failed to save status',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER
+            );
+        }
     };
 
     return (
@@ -35,7 +56,6 @@ const StatusModal = ({ visible, onClose }) => {
         </Modal>
     );
 };
-
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
