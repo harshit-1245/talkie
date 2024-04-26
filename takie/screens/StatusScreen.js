@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Animated, Easing, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import axios from 'axios';
 
 const StatusScreen = () => {
-    const [statusData, setStatusData] = useState([]);
-    const [author, setAuthor] = useState("");
-    const [profile, setProfile] = useState(null); // or useState(undefined)
+    const route=useRoute()
+
+     const profile=route.params.profile;
+     const statusData=route.params.statusData;
+     const author=route.params.profileUser
+
+    
 
 
     const [loadingWidth] = useState(new Animated.Value(0)); // Initialize the loading bar width
@@ -14,20 +18,7 @@ const StatusScreen = () => {
 
     const userId = "65ff05c31f5580ae6bfb191d";
 
-    const getStatus = async () => {
-        try {
-            const response = await axios.get(`http://192.168.6.201:4200/status/${userId}`);
-            console.log("Response Data:", response.data);
-            setStatusData(response.data);
-            if (response.data.length > 0) {
-                setAuthor(response.data[0].author.username);
-                setProfile(response.data[0].author.profile)
-            }
-        } catch (error) {
-            console.error("Error fetching status data:", error);
-        }
-    };
-    
+
 
     useEffect(() => {
         const animate = () => {
@@ -41,7 +32,7 @@ const StatusScreen = () => {
             });
         };
 
-        getStatus();
+        
         animate();
     }, []);
 

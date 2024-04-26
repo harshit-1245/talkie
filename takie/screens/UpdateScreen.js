@@ -2,7 +2,7 @@ import { FlatList, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } 
 import React, { useEffect, useState } from 'react';
 import { Entypo,FontAwesome6,AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker"
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import StatusModal from '../modals/statusModal';
 import axios from "axios"
 
@@ -32,11 +32,14 @@ const handleSetStatus=async()=>{
 
   const UpdateScreen = () => {
     const navigation=useNavigation()
-    
+    const route=useRoute()
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [users,setUsers]=useState([])
     const [profile,setProfile]=useState(null)
     const [username,setUsername]=useState([])
+    const [statusData, setStatusData] = useState([]);
+    const [author, setAuthor] = useState("");
+    const [profileUser, setProfileUser] = useState(null); 
     
     const recepientIds = ["65ff05c31f5580ae6bfb191d"]; 
 
@@ -44,6 +47,7 @@ const handleSetStatus=async()=>{
       
       getUsers();
       getProfile()
+      getStatus()
     }, []);
 
     const getUsers = async () => {
@@ -69,12 +73,21 @@ const handleSetStatus=async()=>{
         console.log(error);
       }
     };
-    
-    
-  const handleNavigation=()=>{
-   
-    navigation.navigate("StatusDekho")
-  }
+    const userId = "65ff05c31f5580ae6bfb191d";
+    const getStatus = async () => {
+      try {
+          const response = await axios.get(`http://192.168.6.201:4200/status/${userId}`);
+          // console.log("Response Data:", response.data);
+          setStatusData(response.data);
+          if (response.data.length > 0) {
+              setAuthor(response.data[0].author.username);
+              setProfileUser(response.data[0].author.profile)
+          }
+      } catch (error) {
+          console.error("Error fetching status data:", error);
+      }
+  };
+
    
     
 
@@ -85,15 +98,20 @@ const handleSetStatus=async()=>{
     }
 
     const renderItem = ({ item }) => (
-      <Pressable onPress={handleNavigation} style={styles.mainStatus}>
-        <View style={styles.loadingBar}>
-          <Image source={{ uri: item.profile }} style={styles.profileImage} />
-        </View>
-        <View>
-          <Text style={styles.user}>{item.username}</Text>
-          <Text style={styles.timestamps}>Timestamps</Text>
-        </View>
-      </Pressable>
+      <></>
+      // <Pressable onPress={()=>navigation.navigate("StatusDekho",{
+      //   profile:profileUser,
+      //   author:username,
+      //   statusData:statusData
+      // })} style={styles.mainStatus}>
+      //   <View style={styles.loadingBar}>
+      //     <Image source={{ uri: item.profile }} style={styles.profileImage} />
+      //   </View>
+      //   <View>
+      //     <Text style={styles.user}>{item.username}</Text>
+      //     <Text style={styles.timestamps}>Timestamps</Text>
+      //   </View>
+      // </Pressable>
     );
   
     return (
@@ -113,7 +131,11 @@ const handleSetStatus=async()=>{
       </Pressable>
       <View style={styles.line} />
       
-      <Pressable onPress={handleNavigation} style={styles.mainStatus}>
+      <Pressable onPress={()=>navigation.navigate("StatusDekho",{
+        profile:profileUser,
+        author:username,
+        statusData:statusData
+      })} style={styles.mainStatus}>
         <View style={styles.loadingBar}>
           <Image source={{ uri: profile }} style={styles.profileImage} />
         </View>

@@ -12,7 +12,7 @@ const SearchModal = ({ visible, closeModal }) => {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const response = await axios.get("http://192.168.14.201:4200");
+        const response = await axios.get("http://192.168.6.201:4200");
         setData(response.data); 
       } catch (error) {
         console.log(error);
