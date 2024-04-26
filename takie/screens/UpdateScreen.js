@@ -35,7 +35,8 @@ const handleSetStatus=async()=>{
     
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [users,setUsers]=useState([])
-    const [profile,setProfile]=useState({})
+    const [profile,setProfile]=useState(null)
+    const [username,setUsername]=useState([])
     
     const recepientIds = ["65ff05c31f5580ae6bfb191d"]; 
 
@@ -63,10 +64,12 @@ const handleSetStatus=async()=>{
         const response = await axios.get("http://192.168.6.201:4200");
         const profileData = response.data; 
         setProfile(profileData.user[0].profile);
+        setUsername(profileData.user[0].username);
       } catch (error) {
         console.log(error);
       }
     };
+    
     
   const handleNavigation=()=>{
    
@@ -106,6 +109,17 @@ const handleSetStatus=async()=>{
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.addStatusText}>Tap to add status update</Text>
+        </View>
+      </Pressable>
+      <View style={styles.line} />
+      
+      <Pressable onPress={handleNavigation} style={styles.mainStatus}>
+        <View style={styles.loadingBar}>
+          <Image source={{ uri: profile }} style={styles.profileImage} />
+        </View>
+        <View>
+          <Text style={styles.user}>{username}</Text>
+          <Text style={styles.timestamps}>Timestamps</Text>
         </View>
       </Pressable>
       <View style={styles.line} />

@@ -1,6 +1,6 @@
 import io from "socket.io-client"
 
-const SOCKET_URL="http://192.168.14.201:4200"
+const SOCKET_URL="http://192.168.6.201:4200"
 
 class WSService {
    initializeSocket=async()=>{
