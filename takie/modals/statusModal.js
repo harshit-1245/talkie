@@ -9,7 +9,7 @@ const StatusModal = ({ visible, onClose }) => {
     const handleSave = async () => {
         try {
             // Post method for sending status to the backend
-            const response = await axios.post(`http://192.168.6.201:4200/status`, {
+            const response = await axios.post(`http://192.168.74.201:4200/status`, {
                 userId: userId,
                 text: statusText // Use statusText instead of text
             });

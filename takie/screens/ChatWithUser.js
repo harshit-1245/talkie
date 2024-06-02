@@ -33,7 +33,7 @@ const ChatWithUser = () => {
       recepientId:recepientId,
       messageText:message
      }
-     const response=await axios.post("http://192.168.6.201:4200/sendMessage",handleData)
+     const response=await axios.post("http://192.168.74.201:4200/sendMessage",handleData)
      if(response.status === 200){
       setMessage("");
       getChat()
@@ -46,7 +46,7 @@ const ChatWithUser = () => {
 
   const getChat = async () => {
     try {
-      const response = await axios.get(`http://192.168.6.201:4200/message/${userId}/${recepientId}`);
+      const response = await axios.get(`http://192.168.74.201:4200/message/${userId}/${recepientId}`);
       setChatMessage(response.data.map((message, index) => ({ ...message, _id: index.toString() })));
     } catch (error) {
       console.log(error);
