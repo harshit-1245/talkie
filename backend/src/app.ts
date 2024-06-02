@@ -16,7 +16,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO server
 const io = new Server(server, {
   cors: {
-    origin: 'http://192.168.6.201:8081', // Adjust origin as needed
+    origin: 'http://192.168.74.201:8081', // Adjust origin as needed
   },
 });
 

@@ -78,6 +78,7 @@ function MainTabsScreen({ openModal, closeModal, modalVisible }) {
             <SearchButton onPress={openModal} />
             <View style={styles.iconSeparator} />
             <Entypo name="dots-three-vertical" size={24} color="black" style={styles.icon} />
+            
           </View>
         </View>
       </SafeAreaView>

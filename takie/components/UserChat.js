@@ -13,11 +13,15 @@ const UserChat = () => {
     const getUsers = async () => {
       try {
         const promises = recepientIds.map(async (recepientId) => {
-          const response = await axios.get(`http://192.168.74.201:4200/getRecepient/${recepientId}`);
-          return response.data; // Return the whole array instead of just the first element
+          const response = await fetch(`http://192.168.74.201:4200/getRecepient/${recepientId}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const userData = await response.json();
+          return userData;
         });
         const usersData = await Promise.all(promises);
-        setUsers(usersData.flat()); // Flatten the array of arrays into a single array of users
+        setUsers(usersData.flat());
       } catch (error) {
         console.log(error);
       }

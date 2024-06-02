@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View, Modal, StyleSheet, TextInput, TouchableOpacity, Image, Text, FlatList, Pressable } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios"
+import axios from "axios";
 
 const SearchModal = ({ visible, closeModal }) => {
   const navigation = useNavigation();
-  const [data, setData] = useState({});
+  const [data, setData] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -16,23 +16,23 @@ const SearchModal = ({ visible, closeModal }) => {
         setData(response.data); 
       } catch (error) {
         console.log(error);
+        // Handle error - display an error message to the user, retry fetching data, etc.
       }
     };
     getUsers();
   }, []);
 
   const filteredData = data && data.user && Array.isArray(data.user) 
-  ? data.user.filter(item =>
-      item.username.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  : [];
-
+    ? data.user.filter(item =>
+        item.username.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   const renderItem = ({ item }) => (
     <View>
-      <Pressable onPress={()=>navigation.navigate("Chatting",{
-         recepientUsername:item.username,
-         recepientProfile:item.profile
+      <Pressable onPress={() => navigation.navigate("Chatting", {
+        recepientUsername: item.username,
+        recepientProfile: item.profile
       })} style={styles.userProfile}>
         <Image source={{ uri: item.profile }} style={styles.profileImage} />
         <Text style={styles.profileText}>{item.username}</Text>
@@ -80,7 +80,6 @@ const SearchModal = ({ visible, closeModal }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   userProfile: {
-    marginTop:20,
+    marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
